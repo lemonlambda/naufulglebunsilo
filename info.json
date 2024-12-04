@@ -1,0 +1,9 @@
+{
+    "name": "naufulglebunusilo",
+    "version": "1.0.7",
+    "title": "Naufulglebunusilo",
+    "description": "Ever wanted a moshpit of every planet in one? Now here it is!",
+    "author": "LambdaLemon",
+    "factorio_version": "2.0",
+    "dependencies": ["space-age"]
+}

@@ -1,0 +1,5 @@
+---------------------------------------------------------------------------------------------------
+Version: 1.0.7
+Date: 21.11.2024
+  Bugfixes:
+    - Fixed an error with external mods not having map_gen_settings
