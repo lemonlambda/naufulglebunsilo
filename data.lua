@@ -1,5 +1,6 @@
 require("prototype.recipes")
 require("prototype.ammonia_tile")
+require("prototype.planet-map-gen-expressions")
 
 local helper = require("prototype.helpers")
 
@@ -13,6 +14,7 @@ planet.orientation = 0.5
 planet.localised_name = "Naufulglebunusilo"
 planet.icon = "__naufulglebunusilo__/graphics/naufulglebunusilo.png"
 planet.starmap_icon = "__naufulglebunusilo__/graphics/starmap-planet-naufulglebunusilo.png"
+planet.starmap_icon_size = 512;
 if mod_settings.fulgora_buildings == true or mod_settings.all_buildings then
 	planet.surface_properties["magnetic-field"] = 99
 else
@@ -29,6 +31,11 @@ for _,property in pairs(data.raw["agricultural-tower"]["agricultural-tower"].sur
 	end
 end
 for _,property in pairs(data.raw["assembling-machine"]["captive-biter-spawner"].surface_conditions) do
+	if property.property == "pressure" then
+		property.min = 900
+	end
+end
+for _,property in pairs(data.raw["lab"]["biolab"].surface_conditions) do
 	if property.property == "pressure" then
 		property.min = 900
 	end
@@ -75,6 +82,49 @@ fulgoratonaufulglebunusilo.name = "fulgora-naufulglebunusilo"
 fulgoratonaufulglebunusilo.length = 200000
 fulgoratonaufulglebunusilo.to = "fulgora"
 fulgoratonaufulglebunusilo.from = "naufulglebunusilo"
+
+data.raw["planet"].naufulglebunusilo.map_gen_settings.property_expression_names =
+{
+	elevation = "vulcanus_elevation",
+	temperature = "vulcanus_temperature",
+	moisture = "vulcanus_moisture",
+	aux = "vulcanus_aux",
+	cliffiness = "cliffiness_basic",
+	cliff_elevation = "cliff_elevation_from_elevation",
+	-- Add ore expressions
+	["entity:tungsten-ore:probability"] = "vulcanus_tungsten_ore_probability",
+	["entity:tungsten-ore:richness"] = "vulcanus_tungsten_ore_richness",
+	["entity:coal:probability"] = "vulcanus_coal_probability",
+	["entity:coal:richness"] = "vulcanus_coal_richness",
+	["entity:calcite:probability"] = "vulcanus_calcite_probability",
+	["entity:calcite:richness"] = "vulcanus_calcite_richness",
+	["entity:sulfuric-acid-geyser:probability"] = "vulcanus_sulfuric_acid_geyser_probability",
+	["entity:sulfuric-acid-geyser:richness"] = "vulcanus_sulfuric_acid_geyser_richness",
+	-- Add Fulgora Scrap
+	["entity:scrap:probability"] = "(control:scrap:size > 0)\z
+		* (1 - fulgora_starting_mask)\z
+		* (min((fulgora_structure_cells < min(0.1 * frequency, 0.05 + 0.05 * frequency))\z
+		* (1 + fulgora_structure_subnoise) * abs_mult_height_over * fulgora_artificial_mask\z
+		+ (fulgora_spots_prebanding < (1.2 + 0.4 * linear_size)) * fulgora_vaults_and_starting_vault * 10,\z
+		0.5) * (1 - fulgora_road_paving_2c))",
+	["entity:scrap:richness"] = "(1 + fulgora_structure_subnoise) * 1000 * (7 / (6 + frequency) + 100 * fulgora_vaults_and_starting_vault) * richness",
+	-- Add Aquilo Ores
+	["entity:lithium-brine:probability"] = "aquilo_lithium_brine_probability",
+	["entity:lithium-brine:richness"] = "aquilo_lithium_brine_richness",
+	["entity:fluorine-vent:probability"] = "aquilo_fluorine_vent_probability",
+	["entity:fluorine-vent:richness"] = "aquilo_fluorine_vent_richness",
+	-- Add Nauvis Ores
+	["entity:iron-ore:probability"] = "iron_ore_probability",
+	["entity:iron-ore:richness"] = "iron_ore_richness_expression",
+	["entity:copper-ore:probability"] = "copper_ore_probability",
+	["entity:copper-ore:richness"] = "copper_ore_richness_expression",
+	["entity:stone:probability"] = "stone_probability",
+	["entity:stone:richness"] = "stone_richness_expression",
+	["entity:uranium-ore:probability"] = "uranium_ore_probability",
+	["entity:uranium-ore:richness"] = "uranium_ore_richness_expression",
+	["entity:crude-oil:probability"] = "crude_oil_probability",
+	["entity:crude-oil:richness"] = "crude_oil_richness_expression"
+}
 
 data:extend { aquilotonaufulglebunusilo, fulgoratonaufulglebunusilo }
 data:extend { {

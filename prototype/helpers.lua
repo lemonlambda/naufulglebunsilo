@@ -18,6 +18,9 @@ end
 function helper.concat_planets(index, mod_settings)
 	local concatted = {}
 	for name, v in pairs(data.raw["planet"]) do
+		if not table_contains({"vulcanus", "gleba", "nauvis", "fulgora", "aquilo"}, name) then
+			goto continue
+		end
 		if name == "naufulglebunusilo" then
 			goto continue
 		end
